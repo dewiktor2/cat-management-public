@@ -5,20 +5,20 @@ FROM node:23.5-alpine AS build
 
 WORKDIR /app
 
-# (1) Skopiuj zależności
+# (1) Copy dependencies
 COPY frontend/package.json frontend/package-lock.json ./frontend/
 RUN cd frontend && npm install
 
-# (2) Skopiuj kod projektu (src/, scripts/, environment itp.)
+# (2) Copy project code (src/, scripts/, environment etc.)
 COPY . .
 
-# (3) Zmienne środowiskowe (do generate-env.js)
+# (3) Environment variables (for generate-env.js)
 ARG SUPABASE_URL
 ARG SUPABASE_ANON_KEY
 ENV SUPABASE_URL=$SUPABASE_URL
 ENV SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
 
-# (4) Zbuduj pliki Angulara
+# (4) Build Angular files
 WORKDIR /app/frontend
 RUN npm run build:prod
 
@@ -27,23 +27,23 @@ RUN npm run build:prod
 # -----------------------------
 FROM node:23.5-alpine
 
-# Ustaw katalog roboczy
+# Set working directory
 WORKDIR /app/frontend
 
-# (1) Skopiuj gotowy build (dist/frontend) z etapu 1
+# (1) Copy the built output (dist/frontend) from stage 1
 COPY --from=build /app/frontend/dist/frontend ./dist/frontend
 
-# (2) Skopiuj package*.json i zainstaluj dependencies
+# (2) Copy package*.json and install dependencies
 COPY --from=build /app/frontend/package*.json ./
 RUN npm install --omit=dev
 
-# (3) Skopiuj plik server.js z hosta do kontenera
-# UWAGA: jeśli 'server.js' jest w cat-management-public obok Dockerfile
-# to w Dockerfile wystarczy:
+# (3) Copy server.js from host to the container
+# NOTE: if 'server.js' is in cat-management-public next to Dockerfile
+# then in Dockerfile it's enough to use:
 COPY server.js ./server.js
 
-# Wystaw port 4000
+# Expose port 4000
 EXPOSE 4000
 
-# (4) Uruchom Node z server.js
+# (4) Run Node with server.js
 CMD ["node", "server.js"]
