@@ -25,7 +25,7 @@ RUN npm run build:prod
 # -----------------------------
 # Stage 2: Serve the application using Node
 # -----------------------------
-FROM node:20.5-alpine
+FROM node:23.5-alpine
 
 # Ustaw katalog roboczy
 WORKDIR /app/frontend
