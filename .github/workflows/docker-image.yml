@@ -1,0 +1,31 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout public repo
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Checkout private repo (submodule)
+    - name: Checkout private submodule
+      run: git submodule update --init --recursive
+
+    # Install dependencies
+    - name: Install dependencies
+      run: npm install
+
+    # Generate environment files
+    - name: Generate environment files
+      run: node scripts/generate-env.js --configuration=production
+
+    # Build the application
+    - name: Build Angular App
+      run: npm run build -- --configuration=production
