@@ -1,9 +1,23 @@
 const fs = require("fs");
 const path = require("path");
 const dotenv = require("dotenv");
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
 
-const configArg = process.argv.find(arg => arg.startsWith("--configuration="));
-const config = configArg ? configArg.split("=")[1] : "development"; 
+
+const argv = yargs(hideBin(process.argv))
+  .option("configuration", {
+    alias: "c",
+    describe: "Set the environment configuration (development, staging, production)",
+    type: "string",
+    default: "development"
+  })
+  .help()
+  .argv;
+
+const config = argv.configuration;
+
+console.log(`Using configuration: ${config}`);
 
 const envFileMap = {
   development: ".env",
@@ -34,11 +48,11 @@ export const environment = {
 };
 `;
 
-// Ścieżka docelowa pliku środowiskowego
+// final dest
 const targetPath = path.join(__dirname, `../src/environments/environment.${config}.ts`);
 
-// Zapisz plik
+// Save file
 fs.writeFileSync(targetPath, envContent);
-console.log(`Plik \`environment.${config}.ts\` został wygenerowany z pliku \`${envFileMap[config]}\`.`);
-console.log(`SUPABASE_URL: ${envConfig["SUPABASE_URL"]}`);
-console.log(`SUPABASE_ANON_KEY: ${envConfig["SUPABASE_ANON_KEY"]}`);
+// console.log(`Plik \`environment.${config}.ts\` został wygenerowany z pliku \`${envFileMap[config]}\`.`);
+// console.log(`SUPABASE_URL: ${envConfig["SUPABASE_URL"]}`);
+// console.log(`SUPABASE_ANON_KEY: ${envConfig["SUPABASE_ANON_KEY"]}`);

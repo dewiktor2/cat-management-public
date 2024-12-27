@@ -4,11 +4,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "generate-env:dev": "node scripts/generate-env.js --dev",
-    "start:dev": "npm run generate-env:dev && ng serve --configuration development",
-    "serve:prod": "node server.js",
+    "generate-env:dev": "node scripts/generate-env.js --configuration=development",
+    "generate-env:prod": "node scripts/generate-env.js --configuration=production",
+    "start:dev": "npm run generate-env:dev && ng serve --configuration=development",
+    "start:prod": "npm run generate-env:prod && ng build --configuration=production",
     "test": "ng test",
-    "build:prod:docker": "node scripts/generate-docker.js && ng build --configuration production"
+    "build:prod:docker": "node scripts/generate-docker.js && ng build --configuration production",
+    "serve:prod": "node server.js"
   },
   "private": true,
   "dependencies": {
@@ -20,8 +22,8 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
-    "express": "4.21.2",
     "rxjs": "~7.8.0",
+    "express": "4.21.2",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
@@ -30,7 +32,8 @@
     "@angular/cli": "^19.0.6",
     "@angular/compiler-cli": "^19.0.0",
     "@types/jasmine": "~5.1.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "16.4.7",
+    "yargs": "17.7.2",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
