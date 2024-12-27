@@ -11,6 +11,7 @@ An Angular SPA application for managing cats, planning visits, adoptions, and ot
 - **Akita**
 - **Jest**
 - **Docker**
+- **GithubActions**
 - **Supabase**
 - **TypeScript**
 
