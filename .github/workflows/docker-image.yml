@@ -1,3 +1,5 @@
+name: Build and Deploy with Docker Compose
+
 on:
   push:
     branches:
@@ -8,28 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout public repo
-    - name: Checkout repository
+    - name: Clone public repository
       uses: actions/checkout@v3
+      with:
+        repository: dewiktor2/cat-management-public
+        path: cat-management-public
 
-    # Checkout private repo (submodule)
-    - name: Checkout private submodule
-      run: git submodule update --init --recursive
-
-    # Zmień katalog i zainstaluj dependencies
-    - name: Install dependencies
+    - name: Clone private repository
+      env:
+        PRIVATE_TOKEN: ${{ secrets.PRIVATE_TOKEN }}
       run: |
-        cd frontend
-        npm install
+        git clone https://x-access-token:${PRIVATE_TOKEN}@github.com/dewiktor2/cat-management-private.git cat-management-private
 
-    # Generate environment files
-    - name: Generate environment files
+  
+    - name: Debug repositories
       run: |
-        cd frontend
-        node scripts/generate-env.js --configuration=production
+        ls -la cat-management-public
+        ls -la cat-management-private
 
-    # Build the application
-    - name: Build Angular App
-      run: |
-        cd frontend
-        npm run build -- --configuration=production
+    - name: Build and Run with Docker Compose
+      working-directory: ./cat-management-private
+      run: docker-compose up --build -d
