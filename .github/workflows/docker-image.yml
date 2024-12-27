@@ -1,10 +1,3 @@
-name: Build and Deploy
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,14 +11,20 @@ jobs:
     - name: Checkout private submodule
       run: git submodule update --init --recursive
 
-    # Install dependencies
+    # Zmień katalog i zainstaluj dependencies
     - name: Install dependencies
-      run: npm install
+      run: |
+        cd frontend
+        npm install
 
     # Generate environment files
     - name: Generate environment files
-      run: node scripts/generate-env.js --configuration=production
+      run: |
+        cd frontend
+        node scripts/generate-env.js --configuration=production
 
     # Build the application
     - name: Build Angular App
-      run: npm run build -- --configuration=production
+      run: |
+        cd frontend
+        npm run build -- --configuration=production
