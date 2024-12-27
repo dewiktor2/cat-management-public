@@ -1,3 +1,5 @@
+![example workflow](https://github.com/dewiktor2/cat-management-public/actions/workflows/docker-image.yml/badge.svg)
+
 # cat-management-public
 
 An Angular SPA application for managing cats, planning visits, adoptions, and other features.
