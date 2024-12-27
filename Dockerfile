@@ -20,7 +20,7 @@ ENV SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
 
 # (4) Build Angular files
 WORKDIR /app/frontend
-RUN npm run build:prod
+RUN npm run build:prod:docker
 
 # -----------------------------
 # Stage 2: Serve the application using Node
