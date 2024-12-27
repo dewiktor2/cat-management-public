@@ -2,7 +2,7 @@
 
 An Angular SPA application for managing cats, planning visits, adoptions, and other features.
 
-## Aktualnie używane technologie
+## Technologies
 
 - **Angular**: 19+ (standalone components, routing, lazy loading).
 - **Tailwind CSS**
