@@ -1,4 +1,4 @@
-name: Build and Deploy with Docker Compose
+name: Production build and Docker working
 
 on:
   push:
@@ -43,6 +43,23 @@ jobs:
     - name: Build and Run with Docker Compose
       working-directory: ./cat-management-private
       run: docker-compose up --build -d
+
+    # Update build status file
+    # Writes the build status to a file in the public repository
+    - name: Update build status file
+      run: |
+        echo "Build Status: SUCCESS" > build-status.txt
+      working-directory: ./cat-management-public
+
+    # Commit and push build status to public repository
+    - name: Commit and push build status
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add build-status.txt
+        git commit -m "Update build status"
+        git push
+      working-directory: ./cat-management-public
 
     # Stop and remove Docker containers after execution (optional)
     # Cleans up Docker resources to prevent unnecessary usage
