@@ -1,4 +1,4 @@
-![example workflow](https://github.com/dewiktor2/cat-management-public/actions/workflows/docker-image.yml/badge.svg)
+![example workflow](https://github.com/dewiktor2/cat-management-public/actions/workflows/buildCheckImage.yml/badge.svg)
 
 # cat-management-public
 
