@@ -1,0 +1,30 @@
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout public repo
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Checkout private repo (submodule)
+    - name: Checkout private submodule
+      run: git submodule update --init --recursive
+
+    # Zmień katalog i zainstaluj dependencies
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm install
+
+    # Generate environment files
+    - name: Generate environment files
+      run: |
+        cd frontend
+        node scripts/generate-env.js --configuration=production
+
+    # Build the application
+    - name: Build Angular App
+      run: |
+        cd frontend
+        npm run build -- --configuration=production
