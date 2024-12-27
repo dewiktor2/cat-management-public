@@ -1,4 +1,4 @@
-name: Build TEST
+name: Build and Deploy with Docker Compose
 
 on:
   push:
@@ -10,24 +10,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Clone the public repository
     - name: Clone public repository
       uses: actions/checkout@v3
       with:
         repository: dewiktor2/cat-management-public
         path: cat-management-public
 
+    # Clone the private repository using Personal Access Token (PAT)
     - name: Clone private repository
       env:
         PRIVATE_TOKEN: ${{ secrets.PRIVATE_TOKEN }}
       run: |
         git clone https://x-access-token:${PRIVATE_TOKEN}@github.com/dewiktor2/cat-management-private.git cat-management-private
 
-  
+    # Install Docker Compose
+    # Ensures Docker Compose is available on the runner
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    # Debug repositories
+    # Verify that both repositories have been cloned successfully
     - name: Debug repositories
       run: |
         ls -la cat-management-public
         ls -la cat-management-private
 
+    # Build and start the application using Docker Compose
+    # This will run all services defined in the private repo's docker-compose.yml file
     - name: Build and Run with Docker Compose
       working-directory: ./cat-management-private
       run: docker-compose up --build -d
+
+    # Stop and remove Docker containers after execution (optional)
+    # Cleans up Docker resources to prevent unnecessary usage
+    - name: Stop Docker Compose
+      working-directory: ./cat-management-private
+      run: docker-compose down
