@@ -1,4 +1,4 @@
-name: Production build and Docker working
+name: Build and Deploy with Docker Compose
 
 on:
   push:
@@ -25,27 +25,23 @@ jobs:
         git clone https://x-access-token:${PRIVATE_TOKEN}@github.com/dewiktor2/cat-management-private.git cat-management-private
 
     # Install Docker Compose
-    # Ensures Docker Compose is available on the runner
     - name: Install Docker Compose
       run: |
         sudo apt-get update
         sudo apt-get install -y docker-compose
 
     # Debug repositories
-    # Verify that both repositories have been cloned successfully
     - name: Debug repositories
       run: |
         ls -la cat-management-public
         ls -la cat-management-private
 
     # Build and start the application using Docker Compose
-    # This will run all services defined in the private repo's docker-compose.yml file
     - name: Build and Run with Docker Compose
       working-directory: ./cat-management-private
       run: docker-compose up --build -d
 
     # Update build status file
-    # Writes the build status to a file in the public repository
     - name: Update build status file
       run: |
         echo "Build Status: SUCCESS" > build-status.txt
@@ -53,16 +49,17 @@ jobs:
 
     # Commit and push build status to public repository
     - name: Commit and push build status
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add build-status.txt
         git commit -m "Update build status"
-        git push
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/dewiktor2/cat-management-public.git HEAD:main
       working-directory: ./cat-management-public
 
     # Stop and remove Docker containers after execution (optional)
-    # Cleans up Docker resources to prevent unnecessary usage
     - name: Stop Docker Compose
       working-directory: ./cat-management-private
       run: docker-compose down
